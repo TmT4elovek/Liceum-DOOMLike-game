@@ -2,48 +2,56 @@ import pygame
 
 from Player import Player
 from Map import Map
+from RayCasting import RayCasting
 
 GAME_NAME = 'Our game'
-GAME_ICON = ''
-SIZE = (500, 500)
+GAME_ICON = './tools/img/icon.jpg' #!BAD
+WINDOW_SIZE = (1300, 700)
 FPS = 60
 # file urls
-PLAYER_SPRITE = ''
-MAP = ''
+PLAYER_SPRITE = './tools/sprite/player/sp.webp'
+MAP = './tools/map.txt'
 
 
 def main(size: tuple) -> None:
     pygame.init()
-
-    width, height = size
+    pygame.font.init()
     clock = pygame.time.Clock()
-
-    # Sprite groups
+    width, height = size
     players = pygame.sprite.Group()
-    bottom = pygame.sprite.Group()
     walls = pygame.sprite.Group()
-    # Create and setup screen
-    screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+    bottom = pygame.sprite.Group()
+
     pygame.display.set_caption(GAME_NAME)
-    pygame.display.set_icon(pygame.image.load(GAME_ICON))
-    # Create player
-    player = Player(screen, PLAYER_SPRITE)
-    players.add(player)
-    # Create map
+    # pygame.display.set_icon(pygame.image.load('icon.png'))
+    screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+    # PLAYER
+    pl = Player(screen, PLAYER_SPRITE)
+    players.add(pl)
+    # MAP
     map = Map(walls, bottom, MAP)
     map.load()
 
-    ray_casting = RayCasting(screen, player, map)
+    rc = RayCasting(screen, pl, map)
 
     running = True
     while running:
+        # events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        
-        screen.fill('black')
+                exit()
+
+        screen.fill((0, 0, 0))
         clock.tick(FPS)
 
+        players.update(walls)
 
-if __name__ == "__main__":
-    main(SIZE)
+        rc.draw_rays(0.005, 425, 384) # 1920 / 5 <- pixels
+
+        # Обновление экрана
+        pygame.display.flip()
+
+
+if __name__ == '__main__':
+    main(WINDOW_SIZE)

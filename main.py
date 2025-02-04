@@ -32,10 +32,13 @@ def main() -> None:
     finish = pygame.sprite.Group()
     if difficulty == 0:
         MAP = r'tools\map_low.txt'
+        timer = 30
     elif difficulty == 1:
         MAP = r'tools\map_med.txt'
+        timer = 60
     elif difficulty == 2:
         MAP = r'tools\map_hard.txt'
+        timer = 150
     
     # PLAYER
     pl = Player(screen, PLAYER_SPRITE)
@@ -45,7 +48,8 @@ def main() -> None:
     map.load()
 
     rc = RayCasting(screen, pl, map)
-
+    
+    start_ticks = pygame.time.get_ticks()
     running = True
     while running:
         # events
@@ -62,13 +66,19 @@ def main() -> None:
         if pygame.sprite.spritecollideany(pl, finish):
             running = False
             pygame.mixer.stop()
-            break
+            exit()
 
         rc.draw_rays(0.005, 10000, 384) # 1920 / 5 <- pixels
 
+        secunds = round((pygame.time.get_ticks()-start_ticks)/1000, 3)
+        live_timer = timer - secunds
+        f1 = pygame.font.Font(size=30)
+        text = f1.render(f'Time: {int(live_timer // 60)}.{round(live_timer % 60, 3)}', True, 'red', 'black')
+        screen.blit(text, (80, 80))
         # Обновление экрана
         pygame.display.flip()
 
+    
 
 if __name__ == '__main__':
     pygame.init()

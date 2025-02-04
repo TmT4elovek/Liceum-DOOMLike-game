@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
             screen: pygame.surface.Surface,
             img: str,
             spawn_pos: tuple = (80, 80),
-            speed: float = 2.5
+            speed: float = 1.5
             ):
         super().__init__()
         
@@ -45,7 +45,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += self.cur_speed * math.cos(self.angle)
             self.walk()
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
-            self.cur_speed = self.speed + 4
+            self.cur_speed = self.speed + 1
         else:
             self.cur_speed = self.speed
         if keys[pygame.K_LEFT]:
